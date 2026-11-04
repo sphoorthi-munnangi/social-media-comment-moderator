@@ -6,3 +6,4 @@ data/test_probabilities.npy
 models/
 __pycache__/
 *.pyc
+data/moderation.db
