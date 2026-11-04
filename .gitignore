@@ -3,3 +3,4 @@ data/train.csv
 .DS_Store
 data/validation_probabilities.npy
 data/test_probabilities.npy
+models/
