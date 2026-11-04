@@ -4,3 +4,5 @@ data/train.csv
 data/validation_probabilities.npy
 data/test_probabilities.npy
 models/
+__pycache__/
+*.pyc
