@@ -1,7 +1,10 @@
 import streamlit as st
 
 from src.comment_analyzer import analyze_comment
+from src.database import initialize_database, save_moderation_result
 
+
+initialize_database()
 
 st.title("Social Media Comment Moderator")
 
@@ -22,6 +25,12 @@ if st.button("Analyze Comment"):
 
         action = result["action"]
         probabilities = result["probabilities"]
+        
+        save_moderation_result(
+            comment,
+            probabilities,
+            action
+        )
 
         st.subheader("Moderation Recommendation")
 
