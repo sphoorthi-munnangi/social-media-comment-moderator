@@ -126,3 +126,21 @@ column1, column2, column3 = st.columns(3)
 column1.metric("Total Comments", total_comments)
 column2.metric("Model Flagged", flagged_comments)
 column3.metric("Human Decisions", human_decisions)
+
+st.subheader("Model Recommendation Distribution")
+
+recommendation_data = {
+    "Allow": action_counts.get("ALLOW", 0),
+    "Review": action_counts.get("REVIEW", 0),
+    "Hide Candidate": action_counts.get("HIDE_CANDIDATE", 0)
+}
+
+st.bar_chart(
+    recommendation_data,
+    horizontal=True
+)
+
+st.caption(
+    "Current analytics are based on development and test comments "
+    "stored in the local database."
+)
