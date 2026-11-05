@@ -74,5 +74,32 @@ def save_moderation_result(comment_text, probabilities, recommended_action):
         )
     )
 
+    record_id = cursor.lastrowid
+
+    connection.commit()
+    connection.close()
+
+    return record_id
+
+def update_moderator_action(record_id, moderator_action):
+    """
+    Save the human moderator's final decision for a moderation record.
+    """
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    cursor = connection.cursor()
+
+    cursor.execute(
+        """
+        UPDATE moderation_results
+        SET moderator_action = ?
+        WHERE id = ?
+        """,
+        (
+            moderator_action,
+            record_id
+        )
+    )
+
     connection.commit()
     connection.close()
