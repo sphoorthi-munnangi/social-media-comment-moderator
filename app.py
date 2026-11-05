@@ -12,6 +12,7 @@ from src.analytics import (
     get_auto_allow_rate,
     get_flagged_rate,
     get_moderator_action_counts,
+    get_recent_results,
     get_review_completion_rate,
     get_total_comments
 )
@@ -166,4 +167,33 @@ st.bar_chart(
 st.caption(
     "Current analytics are based on development and test comments "
     "stored in the local database."
+)
+
+st.subheader("Recent Moderation Activity")
+
+recent_results = get_recent_results(10)
+
+display_results = []
+
+for result in recent_results:
+    moderator_action = result["moderator_action"]
+
+    if moderator_action is None:
+        if result["recommended_action"] == "ALLOW":
+            moderator_action = "Not Required"
+        else:
+            moderator_action = "Pending"
+
+    display_results.append(
+        {
+            "Comment": result["comment_text"],
+            "Model Recommendation": result["recommended_action"].replace("_", " ").title(),
+            "Moderator Decision": moderator_action.title(),
+            "Created (UTC)": result["created_at"]
+        }
+    )
+
+st.dataframe(
+    display_results,
+    hide_index=True
 )

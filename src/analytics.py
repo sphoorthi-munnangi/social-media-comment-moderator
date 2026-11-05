@@ -126,3 +126,29 @@ def get_review_completion_rate():
         return 0.0
 
     return (completed / flagged) * 100
+
+def get_recent_results(limit=10):
+    """
+    Return the most recent moderation records.
+    """
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+
+    rows = connection.execute(
+        """
+        SELECT
+            comment_text,
+            recommended_action,
+            moderator_action,
+            created_at
+        FROM moderation_results
+        ORDER BY created_at DESC
+        LIMIT ?
+        """,
+        (limit,)
+    ).fetchall()
+
+    connection.close()
+
+    return [dict(row) for row in rows]
