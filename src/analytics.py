@@ -94,3 +94,35 @@ def get_auto_allow_rate():
     allowed = action_counts.get("ALLOW", 0)
 
     return (allowed / total) * 100
+
+def get_review_completion_rate():
+    """
+    Return the percentage of flagged comments that received
+    a human moderator decision.
+    """
+
+    connection = sqlite3.connect(DATABASE_PATH)
+
+    flagged = connection.execute(
+        """
+        SELECT COUNT(*)
+        FROM moderation_results
+        WHERE recommended_action IN ('REVIEW', 'HIDE_CANDIDATE')
+        """
+    ).fetchone()[0]
+
+    completed = connection.execute(
+        """
+        SELECT COUNT(*)
+        FROM moderation_results
+        WHERE recommended_action IN ('REVIEW', 'HIDE_CANDIDATE')
+          AND moderator_action IS NOT NULL
+        """
+    ).fetchone()[0]
+
+    connection.close()
+
+    if flagged == 0:
+        return 0.0
+
+    return (completed / flagged) * 100

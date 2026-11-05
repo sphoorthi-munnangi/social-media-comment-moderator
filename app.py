@@ -12,6 +12,7 @@ from src.analytics import (
     get_auto_allow_rate,
     get_flagged_rate,
     get_moderator_action_counts,
+    get_review_completion_rate,
     get_total_comments
 )
 
@@ -130,8 +131,9 @@ column2.metric("Model Flagged", flagged_comments)
 column3.metric("Human Decisions", human_decisions)
 flagged_rate = get_flagged_rate()
 auto_allow_rate = get_auto_allow_rate()
+review_completion_rate = get_review_completion_rate()
 
-rate_column1, rate_column2 = st.columns(2)
+rate_column1, rate_column2, rate_column3 = st.columns(3)
 
 rate_column1.metric(
     "Flagged Rate",
@@ -141,6 +143,11 @@ rate_column1.metric(
 rate_column2.metric(
     "Auto-Allow Rate",
     f"{auto_allow_rate:.1f}%"
+)
+
+rate_column3.metric(
+    "Review Completion Rate",
+    f"{review_completion_rate:.1f}%"
 )
 
 st.subheader("Model Recommendation Distribution")
