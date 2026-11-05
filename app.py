@@ -7,6 +7,11 @@ from src.database import (
     update_moderator_action
 )
 
+from src.analytics import (
+    get_action_counts,
+    get_moderator_action_counts,
+    get_total_comments
+)
 
 initialize_database()
 
@@ -100,3 +105,24 @@ if "record_id" in st.session_state:
                 "Moderator decision saved: "
                 f"{st.session_state['moderator_action']}"
             )
+
+st.divider()
+
+st.header("Moderation Analytics")
+
+total_comments = get_total_comments()
+action_counts = get_action_counts()
+moderator_counts = get_moderator_action_counts()
+
+flagged_comments = (
+    action_counts.get("REVIEW", 0)
+    + action_counts.get("HIDE_CANDIDATE", 0)
+)
+
+human_decisions = sum(moderator_counts.values())
+
+column1, column2, column3 = st.columns(3)
+
+column1.metric("Total Comments", total_comments)
+column2.metric("Model Flagged", flagged_comments)
+column3.metric("Human Decisions", human_decisions)
