@@ -152,3 +152,47 @@ def get_recent_results(limit=10):
     connection.close()
 
     return [dict(row) for row in rows]
+
+def get_human_feedback_counts():
+    """
+    Count human decisions for flagged moderation records.
+    """
+
+    connection = sqlite3.connect(DATABASE_PATH)
+
+    rows = connection.execute(
+        """
+        SELECT
+            recommended_action,
+            moderator_action,
+            COUNT(*)
+        FROM moderation_results
+        WHERE recommended_action IN ('REVIEW', 'HIDE_CANDIDATE')
+          AND moderator_action IS NOT NULL
+        GROUP BY recommended_action, moderator_action
+        """
+    ).fetchall()
+
+    connection.close()
+
+    feedback_counts = {
+        "hide_confirmed": 0,
+        "hide_overridden": 0,
+        "review_allowed": 0,
+        "review_hidden": 0
+    }
+
+    for recommended_action, moderator_action, count in rows:
+        if recommended_action == "HIDE_CANDIDATE":
+            if moderator_action == "HIDE":
+                feedback_counts["hide_confirmed"] += count
+            elif moderator_action == "ALLOW":
+                feedback_counts["hide_overridden"] += count
+
+        elif recommended_action == "REVIEW":
+            if moderator_action == "ALLOW":
+                feedback_counts["review_allowed"] += count
+            elif moderator_action == "HIDE":
+                feedback_counts["review_hidden"] += count
+
+    return feedback_counts

@@ -11,6 +11,7 @@ from src.analytics import (
     get_action_counts,
     get_auto_allow_rate,
     get_flagged_rate,
+    get_human_feedback_counts,
     get_moderator_action_counts,
     get_recent_results,
     get_review_completion_rate,
@@ -167,6 +168,32 @@ st.bar_chart(
 st.caption(
     "Current analytics are based on development and test comments "
     "stored in the local database."
+)
+
+st.subheader("Human Feedback")
+
+feedback_counts = get_human_feedback_counts()
+
+feedback_column1, feedback_column2, feedback_column3, feedback_column4 = st.columns(4)
+
+feedback_column1.metric(
+    "Hide Confirmed",
+    feedback_counts["hide_confirmed"]
+)
+
+feedback_column2.metric(
+    "Hide Overridden",
+    feedback_counts["hide_overridden"]
+)
+
+feedback_column3.metric(
+    "Review → Allow",
+    feedback_counts["review_allowed"]
+)
+
+feedback_column4.metric(
+    "Review → Hide",
+    feedback_counts["review_hidden"]
 )
 
 st.subheader("Recent Moderation Activity")
