@@ -1,3 +1,4 @@
+import pandas as pd
 import streamlit as st
 
 from src.comment_analyzer import analyze_comment
@@ -12,6 +13,7 @@ from src.analytics import (
     get_auto_allow_rate,
     get_flagged_rate,
     get_human_feedback_counts,
+    get_feedback_records,
     get_moderator_action_counts,
     get_recent_results,
     get_review_completion_rate,
@@ -195,6 +197,22 @@ feedback_column4.metric(
     "Review → Hide",
     feedback_counts["review_hidden"]
 )
+
+feedback_records = get_feedback_records()
+
+if feedback_records:
+    feedback_dataframe = pd.DataFrame(feedback_records)
+
+    feedback_csv = feedback_dataframe.to_csv(
+        index=False
+    )
+
+    st.download_button(
+        label="Download Human Feedback CSV",
+        data=feedback_csv,
+        file_name="moderation_feedback.csv",
+        mime="text/csv"
+    )
 
 st.subheader("Recent Moderation Activity")
 

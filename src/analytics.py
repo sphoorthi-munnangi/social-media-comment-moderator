@@ -196,3 +196,35 @@ def get_human_feedback_counts():
                 feedback_counts["review_hidden"] += count
 
     return feedback_counts
+
+def get_feedback_records():
+    """
+    Return flagged comments that received a human moderator decision.
+    """
+
+    connection = sqlite3.connect(DATABASE_PATH)
+    connection.row_factory = sqlite3.Row
+
+    rows = connection.execute(
+        """
+        SELECT
+            comment_text,
+            toxic,
+            severe_toxic,
+            obscene,
+            threat,
+            insult,
+            identity_hate,
+            recommended_action,
+            moderator_action,
+            created_at
+        FROM moderation_results
+        WHERE recommended_action IN ('REVIEW', 'HIDE_CANDIDATE')
+          AND moderator_action IS NOT NULL
+        ORDER BY created_at DESC
+        """
+    ).fetchall()
+
+    connection.close()
+
+    return [dict(row) for row in rows]
