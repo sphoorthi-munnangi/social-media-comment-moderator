@@ -1,8 +1,12 @@
 .venv/
 data/train.csv
-.DS_Store
+data/test.csv
+data/test_labels.csv
 data/validation_probabilities.npy
 data/test_probabilities.npy
+data/external_test_probabilities.npy
+data/external_test_probabilities_partial.npy
+.DS_Store
 models/
 __pycache__/
 *.pyc
